@@ -4,6 +4,13 @@ export default function Create() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [newCategory, setNewCategory] = useState('');
+  const [categories, setCategories] = useState([]);
+
+  const addCategory = (e) => {
+    setCategories(prev => [newCategory, ...prev])
+    setNewCategory('')
+  }
+
 
   return (
     <section className="mx-auto max-w-2xl py-8 sm:py-12">
@@ -13,7 +20,6 @@ export default function Create() {
           Add the details below to grow your personal library.
         </p>
       </header>
-
       <form className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
         <div className="space-y-6">
           <div>
@@ -55,7 +61,7 @@ export default function Create() {
                 placeholder="e.g. Fiction"
               />
               <button
-                className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition hover:bg-indigo-100 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+                type='button' onClick={addCategory} className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition hover:bg-indigo-100 focus:outline-none focus:ring-4 focus:ring-indigo-100"
                 aria-label="Add category"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-6">
@@ -64,6 +70,16 @@ export default function Create() {
               </button>
             </div>
           </div>
+          <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <span
+                  key={category}
+                  className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
         </div>
 
         <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
