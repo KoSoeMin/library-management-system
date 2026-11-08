@@ -1,14 +1,29 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
 import useFetch from '../hooks/useFetch';
 
 export default function BookList() {
 
-  const { data : books, loading, error } = useFetch('http://localhost:3000/books');
+  const location = useLocation();
+  const search = new URLSearchParams(location.search).get('search')?.trim().toLocaleLowerCase() ?? '';
+
+  const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const filteredBooks = (books ?? []).filter((book) => {
+    if (!search) return true;
+
+    const searchableText = [
+      book.title,
+      book.description,
+      ...(Array.isArray(book.categories) ? book.categories : []),
+    ].join(' ').toLocaleLowerCase();
+
+    return searchableText.includes(search);
+  });
 
   return (
     <section className="px-4 pb-12 sm:px-6">
@@ -24,11 +39,14 @@ export default function BookList() {
                 Discover books
               </h2>
             </div>
-            <span className="text-sm text-slate-500">5 books</span>
+            <span className="text-sm text-slate-500">
+              {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'}
+            </span>
           </div>
-            {/* ... inside your component return ... */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {books.map((book) => (
+            {filteredBooks.length === 0 ? (
+              <p className="col-span-full text-slate-500">No books found{search ? ` for "${search}"` : ''}.</p>
+            ) : filteredBooks.map((book) => (
               <Link 
                 key={book.id} 
                 to={`/books/${book.id}`} 

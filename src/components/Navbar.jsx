@@ -1,7 +1,17 @@
-import React from 'react'
-import { Link } from 'react-router'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router'
 
 export default function Navbar() {
+
+    const [search, setSearch] = useState('');
+    const navigate = useNavigate();
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+        const query = search.trim();
+        navigate(query ? `/?search=${encodeURIComponent(query)}` : '/');
+    }
+
   return (
     <div>
         <nav className='border border-b-1'>
@@ -10,10 +20,15 @@ export default function Navbar() {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
-                    <input 
-                        type="text" 
-                        placeholder="Search Books..." 
-                    />
+                    <form onSubmit={handleSearch} className="flex items-center gap-3">
+                        <input value={search} onChange={(e) => setSearch(e.target.value)} className='border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100'
+                            type="text"
+                            placeholder="Search Books..."
+                        />
+                        <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-4 rounded transition duration-200 flex items-center gap-2">
+                            <span className='hidden md:block'>Search</span>
+                        </button>
+                    </form>
                 </li>
                 
                 <li className='flex items-center gap-3 md:-ml-35'>
