@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import  useFetch  from '../hooks/useFetch'
 
 export default function Create() {
   const [title, setTitle] = useState('');
@@ -6,21 +8,43 @@ export default function Create() {
   const [newCategory, setNewCategory] = useState('');
   const [categories, setCategories] = useState([]);
 
-  const addCategory = (e) => {
-    setCategories(prev => [newCategory, ...prev])
+  const {setPostData, data:book, loading, error} = useFetch('http://localhost:3000/books', "POST");
+
+  const navigate = useNavigate();
+
+  const addCategory = () => {
+    const category = newCategory.trim();
+    if (!category) return;
+
+    setCategories(prev => prev.includes(category) ? prev : [category, ...prev])
     setNewCategory('')
   }
 
+  const addBook = (e) => {
+    e.preventDefault();
+    let data = {
+      title,
+      description,
+      categories
+    }
+    setPostData(data);
+  }
+
+  useEffect(() => {
+    if(book) {
+      navigate('/');
+    }
+  },[book, navigate])
 
   return (
-    <section className="mx-auto max-w-2xl py-8 sm:py-12">
+    <section  className="mx-auto max-w-2xl py-8 sm:py-12">
       <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Add a new book</h1>
         <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-base">
           Add the details below to grow your personal library.
         </p>
       </header>
-      <form className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
+      <form onSubmit={addBook} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
         <div className="space-y-6">
           <div>
             <label htmlFor="title" className="mb-2 block text-sm font-semibold text-slate-700">
@@ -82,11 +106,17 @@ export default function Create() {
             </div>
         </div>
 
-        <button className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          <span>Create book</span>
+        {error && (
+            <p role="alert" className="mt-4 text-sm text-red-600">
+              Unable to create the book: {error}
+            </p>
+        )}
+
+        <button disabled={loading} className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <span>{loading ? 'Creating book...' : 'Create book'}</span>
         </button>
       </form>
     </section>

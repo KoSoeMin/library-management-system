@@ -1,34 +1,59 @@
 {
   "books": [
     {
-      "id": 1,
+      "id": "1",
       "title": "The Hobbit",
       "description": "Bilbo Baggins joins a group of dwarves on a journey to reclaim their mountain home and its treasure.",
-      "categories": ["Fantasy", "Adventure"]
+      "categories": [
+        "Fantasy",
+        "Adventure"
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Pride and Prejudice",
       "description": "Elizabeth Bennet navigates family expectations, first impressions, and romance in Regency-era England.",
-      "categories": ["Classic", "Romance"]
+      "categories": [
+        "Classic",
+        "Romance"
+      ]
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "The Martian",
       "description": "An astronaut stranded on Mars uses ingenuity and science to survive while awaiting rescue.",
-      "categories": ["Science Fiction", "Adventure"]
+      "categories": [
+        "Science Fiction",
+        "Adventure"
+      ]
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "The Secret Garden",
       "description": "A lonely girl discovers a hidden garden that helps bring new life and friendship to an old estate.",
-      "categories": ["Classic", "Nature"]
+      "categories": [
+        "Classic",
+        "Nature"
+      ]
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "A Brief History of Time",
       "description": "An accessible introduction to major ideas about the universe, space, time, and black holes.",
-      "categories": ["Science", "Nonfiction"]
+      "categories": [
+        "Science",
+        "Nonfiction"
+      ]
+    },
+    {
+      "title": "book title",
+      "description": "book description",
+      "categories": [
+        "js",
+        "java"
+      ],
+      "id": "29H3FYogD-Q"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
