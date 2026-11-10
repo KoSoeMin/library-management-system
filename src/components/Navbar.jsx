@@ -13,7 +13,7 @@ export default function Navbar() {
         navigate(query ? `/?search=${encodeURIComponent(query)}` : '/');
     }
 
-    let {theme} = useTheme();
+    let {theme, changeTheme} = useTheme();
 
 
   return (
