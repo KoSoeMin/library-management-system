@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ThemeContext } from '../contexts/ThemeContext';
+import useTheme from '../hooks/useTheme'
 
 export default function Navbar() {
 
@@ -13,7 +13,7 @@ export default function Navbar() {
         navigate(query ? `/?search=${encodeURIComponent(query)}` : '/');
     }
 
-    let {theme} = useContext(ThemeContext);
+    let {theme} = useTheme();
 
 
   return (
