@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { ThemeContext } from '../contexts/ThemeContext';
 
 export default function Navbar() {
 
@@ -12,9 +13,12 @@ export default function Navbar() {
         navigate(query ? `/?search=${encodeURIComponent(query)}` : '/');
     }
 
+    let {theme} = useContext(ThemeContext);
+
+
   return (
     <div>
-        <nav className='border border-b-1'>
+        <nav className={`border border-b-1 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-md`}>
             <ul className='flex justify-between items-center p-3 max-w-6xl mx-auto'>
                 <li className='flex items-center gap-3'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">

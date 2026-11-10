@@ -45,7 +45,7 @@ export default function BookList() {
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredBooks.length === 0 ? (
-              <p className="col-span-full text-slate-500">No books found{search ? ` for "${search}"` : ''}.</p>
+              <p className="col-span-full text-center text-slate-500">No books found{search ? ` for "${search}"` : ''}.</p>
             ) : filteredBooks.map((book) => (
               <Link 
                 key={book.id} 
