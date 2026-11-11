@@ -1,14 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
-import useFetch from '../hooks/useFetch';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function BookList() {
 
   const location = useLocation();
   const search = new URLSearchParams(location.search).get('search')?.trim().toLocaleLowerCase() ?? '';
 
-  const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
+  // const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
+
+  let [books, setBooks] = useState([]);
+  let [loading, setLoading] = useState(true);
+  let [error, setError] = useState(null);
+
+  useEffect(function() {
+      let ref = collection(db, 'books');
+      getDocs(ref).then((docs) => {
+        let booksData = [];
+        docs.forEach((doc) => {
+          booksData.push({ id: doc.id, ...doc.data() });
+        });
+        setBooks(booksData);
+        setLoading(false);
+      }).catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  },[]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
