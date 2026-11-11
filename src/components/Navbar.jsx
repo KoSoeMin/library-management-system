@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import useTheme from '../hooks/useTheme'
+import lightIcon from '../assets/light.svg'
+import darkIcon from '../assets/dark.svg'
 
 export default function Navbar() {
 
@@ -18,7 +20,7 @@ export default function Navbar() {
 
   return (
     <div>
-        <nav className={`border border-b-1 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'} shadow-md`}>
+        <nav className="border border-b-1">
             <ul className='flex justify-between items-center p-3 max-w-6xl mx-auto'>
                 <li className='flex items-center gap-3'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -58,6 +60,9 @@ export default function Navbar() {
                     {/* profile image */}
                     <div className='w-11'>
                         <img className='rounded-full' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
+                    </div>
+                    <div className='w-11 cursor-pointer'>
+                        {theme === 'dark' ? <img src={lightIcon} alt="" onClick={() => changeTheme('light')} /> : <img src={darkIcon} alt="" onClick={() => changeTheme('dark')} />}
                     </div>
                 </li>
             </ul>

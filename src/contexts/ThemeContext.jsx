@@ -18,9 +18,9 @@ export const ThemeProvider = ({ children }) => {
 
     let [state, dispatch] = useReducer(ThemeReducer, { theme: 'light' });
 
-    let changeTheme = () => {
+    let changeTheme = (theme) => {
         //action -> type + payload -> {type, payload}
-        dispatch({ type: 'CHANGE_THEME', payload: 'dark' });
+        dispatch({ type: 'CHANGE_THEME', payload: theme });
     }
 
     return (
