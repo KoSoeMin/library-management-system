@@ -12,10 +12,11 @@ export default function BookList() {
   // const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
 
   let [books, setBooks] = useState([]);
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(false);
   let [error, setError] = useState(null);
 
   useEffect(function() {
+      setLoading(true);
       let ref = collection(db, 'books');
       getDocs(ref).then((docs) => {
         let booksData = [];

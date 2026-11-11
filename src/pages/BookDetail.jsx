@@ -1,13 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router';
-import useFetch from '../hooks/useFetch';
 import bookImg from '../assets/images.jpg'
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export default function BookDetail() {
 
-     const { bookId } = useParams();
+    const { bookId } = useParams();
+    let [book, setBook] = useState(null);
+    let [loading, setLoading] = useState(false);
+    let [error, setError] = useState(null);
+  
+    useEffect(() => {
+        setLoading(true);
+        let ref = doc(db, 'books', bookId);
+        getDoc(ref).then((doc) => {
+          let bookData = { id: doc.id, ...doc.data() };
+          setBook(bookData);
+          setLoading(false);
+        }).catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    },[bookId]);
 
-     const { data : book, loading, error } = useFetch(`http://localhost:3000/books/${bookId}`);
+    //  const { data : book, loading, error } = useFetch(`http://localhost:3000/books/${bookId}`);
 
      if (loading) {
        return (
