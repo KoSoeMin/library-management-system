@@ -12,17 +12,22 @@ export default function BookDetail() {
     let [error, setError] = useState(null);
   
     useEffect(() => {
-        setLoading(true);
-        let ref = doc(db, 'books', bookId);
-        getDoc(ref).then((doc) => {
-          let bookData = { id: doc.id, ...doc.data() };
-          setBook(bookData);
+      setLoading(true);
+      let ref = doc(db, 'books', bookId);
+      getDoc(ref)
+        .then((doc) => {
+          if (doc.exists()) {
+            setBook({ id: doc.id, ...doc.data() });
+          } else {
+            setError('Book not found.');
+          }
           setLoading(false);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           setError(error.message);
           setLoading(false);
         });
-    },[bookId]);
+    }, [bookId]);
 
     //  const { data : book, loading, error } = useFetch(`http://localhost:3000/books/${bookId}`);
 
@@ -69,7 +74,7 @@ export default function BookDetail() {
                 {book.title}
               </h1>
               <div className="mt-5 flex flex-wrap gap-2">
-                {book.categories.map(category => (
+                {book.categories?.map(category => (
                   <span
                     key={category}
                     className="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700"

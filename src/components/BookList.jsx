@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
 import { db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 export default function BookList() {
 
@@ -18,7 +18,8 @@ export default function BookList() {
   useEffect(function() {
       setLoading(true);
       let ref = collection(db, 'books');
-      getDocs(ref).then((docs) => {
+      let q = query(ref, orderBy('data', 'desc'));
+      getDocs(q).then((docs) => {
         let booksData = [];
         docs.forEach((doc) => {
           booksData.push({ id: doc.id, ...doc.data() });

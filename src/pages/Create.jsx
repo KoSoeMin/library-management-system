@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import  useFetch  from '../hooks/useFetch'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export default function Create() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [categories, setCategories] = useState([]);
-
-  const {setPostData, data:book, loading, error} = useFetch('http://localhost:3000/books', "POST");
 
   const navigate = useNavigate();
 
@@ -25,16 +24,16 @@ export default function Create() {
     let data = {
       title,
       description,
-      categories
+      categories,
+      data : serverTimestamp()
     }
-    setPostData(data);
+    // Send the data to the firebase server
+    let ref = collection(db, 'books');
+    addDoc(ref, data)
+      .then(() => {
+        navigate('/')
+      })
   }
-
-  useEffect(() => {
-    if(book) {
-      navigate('/');
-    }
-  },[book, navigate])
 
   return (
     <section  className="mx-auto max-w-2xl py-8 sm:py-12">
@@ -106,17 +105,18 @@ export default function Create() {
             </div>
         </div>
 
-        {error && (
+        {/* {error && (
             <p role="alert" className="mt-4 text-sm text-red-600">
               Unable to create the book: {error}
             </p>
-        )}
+        )} */}
 
-        <button disabled={loading} className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
+        <button  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            <span>{loading ? 'Creating book...' : 'Create book'}</span>
+            {/* <span>{loading ? 'Creating book...' : 'Create book'}</span> */}
+            Create Book
         </button>
       </form>
     </section>
