@@ -1,1 +1,140 @@
 @import "tailwindcss";
+
+html {
+  min-width: 320px;
+  background-color: #f8fafc;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #f8fafc;
+}
+
+.app-shell {
+  min-height: 100vh;
+  color: #0f172a;
+  background-color: #f8fafc;
+  transition: color 200ms ease, background-color 200ms ease;
+}
+
+.theme-toggle {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+.theme-toggle img {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+}
+
+.theme-dark {
+  color-scheme: dark;
+  color: #e2e8f0;
+  background-color: #0f172a;
+}
+
+.theme-dark nav {
+  border-color: #334155;
+  background-color: #111827;
+}
+
+.theme-dark [class~="bg-white"] {
+  background-color: #1e293b;
+}
+
+.theme-dark [class~="bg-slate-50"],
+.theme-dark [class~="bg-slate-100"] {
+  background-color: #273449;
+}
+
+.theme-dark [class~="border-slate-200"],
+.theme-dark [class~="border-slate-300"] {
+  border-color: #475569;
+}
+
+.theme-dark [class~="text-slate-900"] {
+  color: #f1f5f9;
+}
+
+.theme-dark [class~="text-slate-700"] {
+  color: #e2e8f0;
+}
+
+.theme-dark [class~="text-slate-600"] {
+  color: #cbd5e1;
+}
+
+.theme-dark [class~="text-slate-500"] {
+  color: #94a3b8;
+}
+
+.theme-dark [class~="bg-indigo-50"] {
+  background-color: #312e81;
+}
+
+.theme-dark [class~="text-indigo-700"] {
+  color: #c7d2fe;
+}
+
+.theme-dark [class~="text-indigo-600"] {
+  color: #a5b4fc;
+}
+
+.theme-dark [class~="text-indigo-800"] {
+  color: #c7d2fe;
+}
+
+.theme-dark [class~="from-indigo-100"] {
+  --tw-gradient-from: #273449 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(39 52 73 / 0) var(--tw-gradient-to-position);
+}
+
+.theme-dark [class~="via-slate-100"] {
+  --tw-gradient-via: #1e293b var(--tw-gradient-via-position);
+}
+
+.theme-dark [class~="to-indigo-50"] {
+  --tw-gradient-to: #273449 var(--tw-gradient-to-position);
+}
+
+.theme-dark input,
+.theme-dark textarea {
+  color: #f1f5f9;
+}
+
+.theme-dark input::placeholder,
+.theme-dark textarea::placeholder {
+  color: #94a3b8;
+}
+
+.theme-dark .theme-toggle {
+  border-color: #475569;
+  background-color: #1e293b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell,
+  .theme-toggle {
+    transition: none;
+  }
+}

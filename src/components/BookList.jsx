@@ -53,11 +53,11 @@ export default function BookList() {
                 className="block" // Prevents layout shifts from the Link wrapper
               >
                 <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
-                  <div className="overflow-hidden bg-slate-100">
+                  <div className="bg-slate-100">
                     <img
-                      src={images} // Changed from 'images' to the book-specific property
+                      src={images}
                       alt={`${book.title} cover`}
-                      className="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-105"
+                      className="aspect-[2/3] w-full object-contain"
                     />
                   </div>
                   

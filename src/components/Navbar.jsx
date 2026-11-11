@@ -61,9 +61,15 @@ export default function Navbar() {
                     <div className='w-11'>
                         <img className='rounded-full' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
                     </div>
-                    <div className='w-11 cursor-pointer'>
-                        {theme === 'dark' ? <img src={lightIcon} alt="" onClick={() => changeTheme('light')} /> : <img src={darkIcon} alt="" onClick={() => changeTheme('dark')} />}
-                    </div>
+                    <button
+                        type="button"
+                        className="theme-toggle"
+                        onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
+                        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+                        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+                    >
+                        <img src={theme === 'dark' ? lightIcon : darkIcon} alt="" />
+                    </button>
                 </li>
             </ul>
         </nav>

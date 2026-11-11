@@ -41,7 +41,7 @@ export default function BookDetail() {
               <img
                 src={bookImg}
                 alt={`${book.title} cover`}
-                className="max-h-[28rem] w-full rounded-xl object-cover shadow-xl"
+                className="max-h-[28rem] max-w-full rounded-xl object-contain shadow-xl"
               />
             </div>
             <div className="flex flex-col justify-center p-6 sm:p-10">
