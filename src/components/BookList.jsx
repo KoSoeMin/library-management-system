@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
+import trash from '../assets/delete.svg'
 import { db } from '../firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 
 export default function BookList() {
 
@@ -31,6 +32,17 @@ export default function BookList() {
         setLoading(false);
       });
   },[]);
+
+  let deleteBook = async(e, id) => {
+    e.preventDefault();
+    //Delete Firestore document books by id
+    let ref = doc(db, 'books', id);
+    //Backend delete books in Firestore
+    await deleteDoc(ref);
+    //Frontend delete books in state
+    setBooks(books.filter((book) => book.id !== id));
+
+  }
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -93,15 +105,20 @@ export default function BookList() {
                       </p>
                     </div>
                     
-                    <div className="flex flex-wrap gap-2">
-                      {book.categories.map((category) => (
-                        <span
-                          key={category}
-                          className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
-                        >
-                          {category}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap gap-2 justify-between items-center">
+                      <div>
+                        {book.categories.map((category) => (
+                          <span
+                            key={category}
+                            className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+                          >
+                            {category}
+                          </span>
+                        ))}
+                      </div>
+                      <div onClick={(e) => deleteBook(e, book.id)} className="flex items-center gap-2 bg-red-600 inline-block rounded-full px-3 py-1 text-xs font-medium text-white">
+                        <img src={trash} alt="Delete" className="w-4 h-4 cursor-pointer" />
+                      </div>
                     </div>
                   </div>
                 </article>
