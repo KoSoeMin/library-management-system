@@ -4,6 +4,8 @@ import Layout from "../pages/Layouts/Layout";
 import BookForm from "../pages/BookForm";
 import Search from "../pages/Search";
 import BookDetail from "../pages/BookDetail";
+import Register from "../pages/Register";
+import Login from "../pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
       {
         path: "search", // Relative path
         element: <Search />,
+      },
+      {
+        path: "register", // Relative path
+        element: <Register />,
+      },
+      {
+        path: "login", // Relative path
+        element: <Login />,
       },
     ],
   },
