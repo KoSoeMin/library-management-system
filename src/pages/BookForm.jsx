@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function BookForm() {
@@ -47,7 +47,7 @@ export default function BookForm() {
     setNewCategory('')
   }
 
-  const addBook = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     let data = {
       title,
@@ -55,12 +55,16 @@ export default function BookForm() {
       categories,
       data : serverTimestamp()
     }
-    // Send the data to the firebase server
-    let ref = collection(db, 'books');
-    addDoc(ref, data)
-      .then(() => {
-        navigate('/')
-      })
+    if(isEdit) {
+      //Update Firestore document books by id
+      let ref = doc(db, 'books', bookId);
+      await updateDoc(ref, data);
+    }else {
+      //Create Firestore document books // Send the data to the firebase server
+      let ref = collection(db, 'books');
+      await addDoc(ref, data);
+    }
+    navigate('/');
   }
 
   return (
@@ -71,7 +75,7 @@ export default function BookForm() {
           Add the details below to grow your personal library.
         </p>
       </header>
-      <form onSubmit={addBook} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
+      <form onSubmit={submitForm} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-8">
         <div className="space-y-6">
           <div>
             <label htmlFor="title" className="mb-2 block text-sm font-semibold text-slate-700">
