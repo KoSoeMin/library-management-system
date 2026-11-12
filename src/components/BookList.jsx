@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
 import trash from '../assets/delete.svg'
+import edit from '../assets/edit.svg'
 import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 
@@ -116,6 +117,12 @@ export default function BookList() {
                           </span>
                         ))}
                       </div>
+                      <Link to={`/edit/${book.id}`} 
+                        className="inline-flex items-center bg-blue-600 hover:bg-blue-700 rounded-full px-3 py-1 text-xs font-medium text-white transition-colors"
+                      >
+                        <img src={edit} alt="Edit" className="w-4 h-4" />
+                      </Link>
+
                       <div onClick={(e) => deleteBook(e, book.id)} className="flex items-center gap-2 bg-red-600 inline-block rounded-full px-3 py-1 text-xs font-medium text-white">
                         <img src={trash} alt="Delete" className="w-4 h-4 cursor-pointer" />
                       </div>

@@ -1,13 +1,41 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useNavigate, useParams } from 'react-router'
+import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function Create() {
+export default function BookForm() {
+
+  const {bookId} = useParams();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [categories, setCategories] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    //Edit Form: If bookId is present, set the form to edit mode and fetch the book data from Firebase to populate the form fields. Otherwise, set the form to create mode.
+    if(bookId) {
+      setIsEdit(true);
+      //Get the book data from the firebase server and set the state
+      let ref = doc(db, 'books', bookId);
+        getDoc(ref)
+          .then((doc) => {
+            if (doc.exists()) {
+              let { title, description, categories } = doc.data();
+              setTitle(title);
+              setDescription(description);
+              setCategories(categories);
+            }
+          });
+    //Create Form: If bookId is not present, set the form to create mode and clear the form fields.
+    }else {
+      setIsEdit(false);
+      setTitle('');
+      setDescription('');
+      setCategories([]);
+    }
+  }, [bookId]);
 
   const navigate = useNavigate();
 
@@ -115,8 +143,7 @@ export default function Create() {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            {/* <span>{loading ? 'Creating book...' : 'Create book'}</span> */}
-            Create Book
+            <span className='hidden md:block'>{isEdit ? 'Update Book' : 'Create Book'}</span>
         </button>
       </form>
     </section>

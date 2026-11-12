@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Home from "../pages/Home";
 import Layout from "../pages/Layouts/Layout";
-import Create from "../pages/Create";
+import BookForm from "../pages/BookForm";
 import Search from "../pages/Search";
 import BookDetail from "../pages/BookDetail";
 
@@ -20,7 +20,11 @@ const router = createBrowserRouter([
       },
       {
         path: "create", // Relative path
-        element: <Create />,
+        element: <BookForm />,
+      },
+      {
+        path: "edit/:bookId", // Relative path
+        element: <BookForm />,
       },
       {
         path: "search", // Relative path
