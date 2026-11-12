@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router';
 import bookImg from '../assets/images.jpg'
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function BookDetail() {
@@ -14,19 +14,21 @@ export default function BookDetail() {
     useEffect(() => {
       setLoading(true);
       let ref = doc(db, 'books', bookId);
-      getDoc(ref)
-        .then((doc) => {
-          if (doc.exists()) {
-            setBook({ id: doc.id, ...doc.data() });
-          } else {
-            setError('Book not found.');
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
+      onSnapshot(ref, snapshot => {
+        if (snapshot.exists()) {
+          setBook({
+            id: snapshot.id,
+            ...snapshot.data(),
+          });
+          setError(null);
+        } else {
+          setError('Book not found');
+        }
+        setLoading(false);
+      }, snapshotError => {
+        setError(snapshotError.message);
+        setLoading(false);
+      });
     }, [bookId]);
 
     //  const { data : book, loading, error } = useFetch(`http://localhost:3000/books/${bookId}`);

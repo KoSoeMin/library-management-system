@@ -4,7 +4,7 @@ import images from '../assets/images.jpg'
 import trash from '../assets/delete.svg'
 import edit from '../assets/edit.svg'
 import { db } from '../firebase';
-import { collection, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 
 export default function BookList() {
 
@@ -17,23 +17,6 @@ export default function BookList() {
   let [loading, setLoading] = useState(false);
   let [error, setError] = useState(null);
 
-  useEffect(function() {
-      setLoading(true);
-      let ref = collection(db, 'books');
-      let q = query(ref, orderBy('data', 'desc'));
-      getDocs(q).then((docs) => {
-        let booksData = [];
-        docs.forEach((doc) => {
-          booksData.push({ id: doc.id, ...doc.data() });
-        });
-        setBooks(booksData);
-        setLoading(false);
-      }).catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  },[]);
-
   let deleteBook = async(e, id) => {
     e.preventDefault();
     //Delete Firestore document books by id
@@ -41,9 +24,32 @@ export default function BookList() {
     //Backend delete books in Firestore
     await deleteDoc(ref);
     //Frontend delete books in state
-    setBooks(books.filter((book) => book.id !== id));
+    // setBooks(books.filter((book) => book.id !== id));
 
   }
+
+  useEffect(function() {
+      setLoading(true);
+      let ref = collection(db, 'books');
+      let unsubscribe = onSnapshot(ref, snapshot => {
+        let books = snapshot.docs.map(bookDoc => ({
+          id: bookDoc.id,
+          ...bookDoc.data(),
+        }));
+        books.sort((first, second) => {
+          const firstTime = first.data?.toMillis?.() ?? 0;
+          const secondTime = second.data?.toMillis?.() ?? 0;
+          return secondTime - firstTime;
+        });
+        setBooks(books);
+        setLoading(false);
+        setError(null);
+      }, snapshotError => {
+        setError(snapshotError.message);
+        setLoading(false);
+      })
+      return unsubscribe;
+  },[]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -108,7 +114,7 @@ export default function BookList() {
                     
                     <div className="flex flex-wrap gap-2 justify-between items-center">
                       <div>
-                        {book.categories.map((category) => (
+                        {(Array.isArray(book.categories) ? book.categories : []).map((category) => (
                           <span
                             key={category}
                             className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
