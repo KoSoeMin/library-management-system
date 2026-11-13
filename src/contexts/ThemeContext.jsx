@@ -2,8 +2,6 @@
 import { createContext, useReducer } from 'react';
 export const ThemeContext = createContext();
 
-
-
 let ThemeReducer = (state, action) => {
     switch (action.type) {
         case 'CHANGE_THEME':
@@ -12,7 +10,6 @@ let ThemeReducer = (state, action) => {
             return state;
     }
 }
-
 //ThemeContextProvider
 export const ThemeProvider = ({ children }) => {
 
@@ -22,7 +19,6 @@ export const ThemeProvider = ({ children }) => {
         //action -> type + payload -> {type, payload}
         dispatch({ type: 'CHANGE_THEME', payload: theme });
     }
-
     return (
         <ThemeContext.Provider value={{ ...state, changeTheme }}>
             {children}
