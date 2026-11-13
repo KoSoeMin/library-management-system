@@ -4,11 +4,14 @@ import useTheme from '../hooks/useTheme'
 import lightIcon from '../assets/light.svg'
 import darkIcon from '../assets/dark.svg'
 import useSignout from '../hooks/useSignout'
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function Navbar() {
 
     const [search, setSearch] = useState('');
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     const handleSearch = (event) => {
         event.preventDefault();
@@ -81,28 +84,35 @@ export default function Navbar() {
                         <img src={theme === 'dark' ? lightIcon : darkIcon} alt="" />
                     </button>
                     </div>
-                    <div className="flex items-center justify-center p-4">
-                        <button 
-                            onClick={signOutUser}
-                            type="button" 
-                            className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                        >
-                            <svg 
-                            xmlns="http://w3.org" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            strokeWidth="2" 
-                            stroke-linecap="round" 
-                            stroke-linejoin="round" 
-                            className="h-4 w-4"
+                    <div className="flex items-center justify-center p-4 space-x-2">
+                        {!user && 
+                            <>
+                                <Link 
+                                    to={"/login"}
+                                    type="button" 
+                                    className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-green-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                >
+                                    Login
+                                </Link>
+                                <Link 
+                                    to={"/register"}
+                                    type="button" 
+                                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-blue-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                >
+                                    Register
+                                </Link>
+                            </>
+                        }
+
+                        {!!user && (
+                            <button 
+                                onClick={signOutUser}
+                                type="button" 
+                                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                             >
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                            <polyline points="16 17 21 12 16 7" />
-                            <line x1="21" y1="12" x2="9" y2="12" />
-                            </svg>
-                            Log out
-                        </button>
+                                Logout
+                            </button>
+                        )}
                     </div>
 
                 </li>
