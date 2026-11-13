@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import useTheme from '../hooks/useTheme'
 import lightIcon from '../assets/light.svg'
 import darkIcon from '../assets/dark.svg'
+import useSignout from '../hooks/useSignout'
 
 export default function Navbar() {
 
@@ -16,6 +17,14 @@ export default function Navbar() {
     }
 
     let {theme, changeTheme} = useTheme();
+
+    const { signout } = useSignout();
+
+    const signOutUser = async(e) => {
+        e.preventDefault();
+        await signout();
+        navigate('/login');
+    }
 
 
   return (
@@ -61,6 +70,7 @@ export default function Navbar() {
                     <div className='w-11'>
                         <img className='rounded-full' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
                     </div>
+                    <div className='cursor-pointer'>
                     <button
                         type="button"
                         className="theme-toggle"
@@ -70,6 +80,31 @@ export default function Navbar() {
                     >
                         <img src={theme === 'dark' ? lightIcon : darkIcon} alt="" />
                     </button>
+                    </div>
+                    <div className="flex items-center justify-center p-4">
+                        <button 
+                            onClick={signOutUser}
+                            type="button" 
+                            className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 ease-in-out hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                            <svg 
+                            xmlns="http://w3.org" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            strokeWidth="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            className="h-4 w-4"
+                            >
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
+                            Log out
+                        </button>
+                    </div>
+
                 </li>
             </ul>
         </nav>
