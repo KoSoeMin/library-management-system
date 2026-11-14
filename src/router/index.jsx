@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Home from "../pages/Home";
 import Layout from "../pages/Layouts/Layout";
 import BookForm from "../pages/BookForm";
@@ -11,6 +11,10 @@ import { AuthContext } from "../contexts/AuthContext";
 
 export default function index() {
 
+let { authReady, user } = useContext(AuthContext);
+
+const isAuthenticated = Boolean(user);
+
   const router = createBrowserRouter([
   {
     path: "/",
@@ -18,37 +22,35 @@ export default function index() {
     children: [
       {
         index: true, // Best practice for the default child route matching the parent's path
-        element: <Home />,
+        element: isAuthenticated ? <Home /> : <Navigate to="/login"/>,
       },
       {
         path: "books/:bookId", // Relative path without the leading slash inside children
-        element: <BookDetail />,
+        element: isAuthenticated ? <BookDetail /> : <Navigate to="/login"/>,
       },
       {
         path: "create", // Relative path
-        element: <BookForm />,
+        element: isAuthenticated ? <BookForm /> : <Navigate to ="/login"/>,
       },
       {
         path: "edit/:bookId", // Relative path
-        element: <BookForm />,
+        element: isAuthenticated ? <BookForm /> : <Navigate to ="/login"/>,
       },
       {
         path: "search", // Relative path
-        element: <Search />,
+        element: isAuthenticated ? <Search /> : <Navigate to="/login"/>,
       },
       {
         path: "register", // Relative path
-        element: <Register />,
+        element: !isAuthenticated ?  <Register /> : <Navigate to="/"/>,
       },
       {
         path: "login", // Relative path
-        element: <Login />,
+        element: !isAuthenticated ? <Login /> : <Navigate to="/"/>,
       },
     ],
   },
 ]);
-
-let { authReady } = useContext(AuthContext);
 
   return (
     authReady && <RouterProvider router={router} />

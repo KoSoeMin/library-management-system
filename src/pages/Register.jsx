@@ -15,7 +15,7 @@ export default function Register() {
         let user = await signup(email, password);
 
         if (user) {
-            navigate('/');
+            navigate('/login');
         }
     }
 
