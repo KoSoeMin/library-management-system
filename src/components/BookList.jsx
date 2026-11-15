@@ -2,7 +2,9 @@ import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
 import trash from '../assets/delete.svg'
 import edit from '../assets/edit.svg'
-import useFirestore from '../hooks/useFirestore'
+import useFirestore, { useCollection } from '../hooks/useFirestore'
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/AuthContext'
 
 export default function BookList() {
 
@@ -11,15 +13,23 @@ export default function BookList() {
 
   // const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
 
-  let { getCollection, deleteDocument } = useFirestore();
-  let { error, data: books, loading } = getCollection('books');
+  const { user, authReady } = useContext(AuthContext);
+
+  const { deleteDocument } = useFirestore();
+  const { error, data: books, loading } = useCollection(
+    'books',
+    'uid',
+    '==',
+    user?.uid,
+    authReady && Boolean(user)
+  );
   
   let deleteBook = async(e, id) => {
     e.preventDefault();
     await deleteDocument('books', id);
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (!authReady || loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   const filteredBooks = (books ?? []).filter((book) => {
@@ -37,8 +47,7 @@ export default function BookList() {
   return (
     <section className="px-4 pb-12 sm:px-6">
 
-      {!!books && (
-        <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-end justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
@@ -106,8 +115,7 @@ export default function BookList() {
               </Link>
             ))}
           </div>
-        </div>
-      )}
+      </div>
 
     </section>
   )

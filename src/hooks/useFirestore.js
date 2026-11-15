@@ -1,40 +1,48 @@
-import { collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import { collection, onSnapshot, doc, deleteDoc, addDoc, updateDoc, serverTimestamp, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react'
 import { db } from '../firebase';
 
-export default function useFirestore() {
+export function useCollection(collectionName, field, operator, value, enabled = true) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(enabled);
+    const [error, setError] = useState(null);
 
-    let getCollection = (collectionName) => {
+    useEffect(() => {
+        setData([]);
+        setError(null);
+        if (!enabled || value == null) {
+            setLoading(false);
+            return undefined;
+        }
 
-        let [data, setData] = useState([]);
-        let [loading, setLoading] = useState(false);
-        let [error, setError] = useState(null);
-
-        useEffect(function() {
-            setLoading(true);
-            let ref = collection(db, collectionName);
-            let unsubscribe = onSnapshot(ref, snapshot => {
-                let collectionDatas = snapshot.docs.map(bookDoc => ({
+        setLoading(true);
+        const collectionRef = collection(db, collectionName);
+        const collectionQuery = query(collectionRef, where(field, operator, value));
+        const unsubscribe = onSnapshot(collectionQuery, snapshot => {
+            const collectionData = snapshot.docs.map(bookDoc => ({
                 id: bookDoc.id,
                 ...bookDoc.data(),
-                }));
-                collectionDatas.sort((first, second) => {
-                const firstTime = first.data?.toMillis?.() ?? 0;
-                const secondTime = second.data?.toMillis?.() ?? 0;
+            }));
+            collectionData.sort((first, second) => {
+                const firstTime = first.date?.toMillis?.() ?? 0;
+                const secondTime = second.date?.toMillis?.() ?? 0;
                 return secondTime - firstTime;
-                });
-                setData(collectionDatas);
-                setLoading(false);
-                setError(null);
-            }, snapshotError => {
-                setError(snapshotError.message);
-                setLoading(false);
-            })
-            return unsubscribe;
-        },[]);
+            });
+            setData(collectionData);
+            setLoading(false);
+            setError(null);
+        }, snapshotError => {
+            setError(snapshotError.message);
+            setLoading(false);
+        });
 
-        return { error, data, loading };
-    }
+        return unsubscribe;
+    }, [collectionName, field, operator, value, enabled]);
+
+    return { error, data, loading };
+}
+
+export default function useFirestore() {
 
     let addCollection = async (collectionName, data) => {
         data.date = serverTimestamp();
@@ -87,6 +95,6 @@ export default function useFirestore() {
         return updateDoc(ref, data);
     }
 
-    return { getCollection, addCollection, getDocument, deleteDocument, updateDocument };
+    return { addCollection, getDocument, deleteDocument, updateDocument };
 
 }

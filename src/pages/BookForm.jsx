@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router'
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import useFirestore from '../hooks/useFirestore';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function BookForm() {
 
@@ -50,12 +52,15 @@ export default function BookForm() {
     setNewCategory('')
   }
 
+  let { user } = useContext(AuthContext);
+
   const submitForm = async (e) => {
         e.preventDefault();
         let data = {
             title,
             description,
             categories,
+            uid: user.uid
         }
         if(isEdit) {
             await updateDocument('books', bookId, data)
