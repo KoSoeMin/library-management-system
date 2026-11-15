@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import images from '../assets/images.jpg'
 import trash from '../assets/delete.svg'
 import edit from '../assets/edit.svg'
-import { db } from '../firebase';
-import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import useFirestore from '../hooks/useFirestore'
 
 export default function BookList() {
 
@@ -13,43 +11,13 @@ export default function BookList() {
 
   // const { data: books, loading, error } = useFetch('http://localhost:3000/books', "GET");
 
-  let [books, setBooks] = useState([]);
-  let [loading, setLoading] = useState(false);
-  let [error, setError] = useState(null);
-
+  let { getCollection, deleteDocument } = useFirestore();
+  let { error, data: books, loading } = getCollection('books');
+  
   let deleteBook = async(e, id) => {
     e.preventDefault();
-    //Delete Firestore document books by id
-    let ref = doc(db, 'books', id);
-    //Backend delete books in Firestore
-    await deleteDoc(ref);
-    //Frontend delete books in state
-    // setBooks(books.filter((book) => book.id !== id));
-
+    await deleteDocument('books', id);
   }
-
-  useEffect(function() {
-      setLoading(true);
-      let ref = collection(db, 'books');
-      let unsubscribe = onSnapshot(ref, snapshot => {
-        let books = snapshot.docs.map(bookDoc => ({
-          id: bookDoc.id,
-          ...bookDoc.data(),
-        }));
-        books.sort((first, second) => {
-          const firstTime = first.data?.toMillis?.() ?? 0;
-          const secondTime = second.data?.toMillis?.() ?? 0;
-          return secondTime - firstTime;
-        });
-        setBooks(books);
-        setLoading(false);
-        setError(null);
-      }, snapshotError => {
-        setError(snapshotError.message);
-        setLoading(false);
-      })
-      return unsubscribe;
-  },[]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

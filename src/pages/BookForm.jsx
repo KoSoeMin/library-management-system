@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import useFirestore from '../hooks/useFirestore';
 
 export default function BookForm() {
 
@@ -12,6 +13,8 @@ export default function BookForm() {
   const [newCategory, setNewCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+
+  let { addCollection, updateDocument } = useFirestore();
 
   useEffect(() => {
     //Edit Form: If bookId is present, set the form to edit mode and fetch the book data from Firebase to populate the form fields. Otherwise, set the form to create mode.
@@ -48,23 +51,18 @@ export default function BookForm() {
   }
 
   const submitForm = async (e) => {
-    e.preventDefault();
-    let data = {
-      title,
-      description,
-      categories,
-      data : serverTimestamp()
-    }
-    if(isEdit) {
-      //Update Firestore document books by id
-      let ref = doc(db, 'books', bookId);
-      await updateDoc(ref, data);
-    }else {
-      //Create Firestore document books // Send the data to the firebase server
-      let ref = collection(db, 'books');
-      await addDoc(ref, data);
-    }
-    navigate('/');
+        e.preventDefault();
+        let data = {
+            title,
+            description,
+            categories,
+        }
+        if(isEdit) {
+            await updateDocument('books', bookId, data)
+        }else {
+            await addCollection('books', data)
+        }
+        navigate('/');
   }
 
   return (

@@ -1,36 +1,14 @@
-import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router';
 import bookImg from '../assets/images.jpg'
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
+import useFirestore from '../hooks/useFirestore';
 
 export default function BookDetail() {
 
     const { bookId } = useParams();
-    let [book, setBook] = useState(null);
-    let [loading, setLoading] = useState(false);
-    let [error, setError] = useState(null);
-  
-    useEffect(() => {
-      setLoading(true);
-      let ref = doc(db, 'books', bookId);
-      onSnapshot(ref, snapshot => {
-        if (snapshot.exists()) {
-          setBook({
-            id: snapshot.id,
-            ...snapshot.data(),
-          });
-          setError(null);
-        } else {
-          setError('Book not found');
-        }
-        setLoading(false);
-      }, snapshotError => {
-        setError(snapshotError.message);
-        setLoading(false);
-      });
-    }, [bookId]);
 
+    let { getDocument } = useFirestore();
+    let { error, data: book, loading } = getDocument('books', bookId);
+  
     //  const { data : book, loading, error } = useFetch(`http://localhost:3000/books/${bookId}`);
 
      if (loading) {
