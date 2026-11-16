@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router';
+import { data, useParams } from 'react-router';
 import useFirestore from '../hooks/useFirestore';
 
 export default function BookForm( { type = 'create', setEditNote, editNote } ) {
@@ -7,7 +7,7 @@ export default function BookForm( { type = 'create', setEditNote, editNote } ) {
     const { bookId } = useParams();
     const [note, setNote]  = useState('');
     
-    let { addCollection } = useFirestore();
+    let { addCollection, updateDocument } = useFirestore();
 
     useEffect(() => {
         if (type === 'update') {
@@ -15,18 +15,24 @@ export default function BookForm( { type = 'create', setEditNote, editNote } ) {
         } 
     }, [type])
 
-    let addNote = async (e) => {
+    let noteSubmit = async (e) => {
         e.preventDefault();
-        let data = {
-            note,
-            bookUid: bookId
+        if ( type === 'create') {
+                let data = {
+                note,
+                bookUid: bookId
+            }
+            await addCollection('notes', data);
+        }else {
+            editNote.note = note;
+            await updateDocument('notes', editNote.id, editNote, false );
+            setEditNote(null);
         }
-        await addCollection('notes', data);
         setNote('')
     }
 
   return (
-    <form onSubmit={addNote} >
+    <form onSubmit={noteSubmit} >
         <textarea
             id="note-input"
             name="note"

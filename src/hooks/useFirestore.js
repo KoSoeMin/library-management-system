@@ -88,8 +88,10 @@ export default function useFirestore() {
         return deleteDoc(ref);
     }
 
-    let updateDocument = async (collectionName, bookId, data) => {
-        data.date = serverTimestamp();
+    let updateDocument = async (collectionName, bookId, data, updateDate = true) => {
+        if ( updateDate ) {
+            data.date = serverTimestamp();
+        }
         //Update Firestore document books by id
         let ref = doc(db, collectionName, bookId);
         return updateDoc(ref, data);
