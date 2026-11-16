@@ -1,9 +1,14 @@
 import { useParams } from 'react-router';
 import useFirestore, { useCollection } from '../hooks/useFirestore';
 import deleteIcon from '../assets/delete.svg';
+import editIcon from '../assets/edit.svg'
+import { useState } from 'react';
+import NoteForm from '../components/NoteForm'
 
 export default function NoteList() {
   const { bookId } = useParams();
+  const { deleteDocument } = useFirestore();
+  const [ editNote, setEditNote ] = useState(null);
   const { error, data: notes, loading } = useCollection(
     'notes',
     'bookUid',
@@ -11,8 +16,6 @@ export default function NoteList() {
     bookId,
     Boolean(bookId)
   );
-
-  const { deleteDocument } = useFirestore();
 
   const handleDeleteNote = async (noteId) => {
     await deleteDocument('notes', noteId)
@@ -72,39 +75,57 @@ export default function NoteList() {
 
             {/* Note Content */}
             <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">
-                    Ko Soe Min
-                  </h3>
-                  <time className="block text-xs text-slate-400">
-                    {note.date?.toDate?.().toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    }) ?? 'Just now'}
-                  </time>
-                </div>
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Ko Soe Min
+                </h3>
+                <time className="block text-xs text-slate-400">
+                  {note.date?.toDate?.().toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  }) ?? 'Just now'}
+                </time>
+              </div>
+
+              {/* Action Buttons Wrapper */}
+              <div className="flex items-center gap-1.5">
+                {/* Edit Button */}
+                <button
+                  type="button"
+                  onClick={() => setEditNote(note)}
+                  aria-label="Edit note"
+                  className="cursor-pointer rounded-lg bg-blue-500 p-2 text-white opacity-90 transition-all hover:bg-blue-700 hover:opacity-100 group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                >
+                  <img
+                    src={editIcon}
+                    alt=""
+                    className="h-4 w-4 transition-transform active:scale-90"
+                  />
+                </button>
 
                 {/* Delete Button */}
                 <button
                   type="button"
                   onClick={() => handleDeleteNote(note.id)}
                   aria-label="Delete note"
-                  className="rounded-lg p-2 text-white bg-red-500 opacity-90 transition-all hover:bg-red-700 hover:opacity-100 group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-red-300 focus:outline-none"
+                  className="cursor-pointer rounded-lg bg-red-500 p-2 text-white opacity-90 transition-all hover:bg-red-700 hover:opacity-100 group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-red-300 focus:outline-none"
                 >
                   <img
                     src={deleteIcon}
                     alt=""
-                    className="cursor-pointer h-4 w-4 transition-transform active:scale-90"
+                    className="h-4 w-4 transition-transform active:scale-90"
                   />
                 </button>
               </div>
-
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
-                {note.note}
-              </p>
             </div>
+
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+              { editNote?.id !== note.id && note.note }
+            </p>
+            { editNote?.id === note.id && <NoteForm type="update" setEditNote={setEditNote} editNote={editNote} />}
+          </div>
           </article>
         ))
       )}

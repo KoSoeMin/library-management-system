@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router';
 import bookImg from '../assets/images.jpg'
 import useFirestore from '../hooks/useFirestore';
 import { getBookCoverUrl } from '../utils/bookCover'
-import BookForm from '../components/BookForm';
+import NoteForm from '../components/NoteForm';
 import NoteList from '../components/NoteList';
 
 export default function BookDetail() {
@@ -80,7 +80,7 @@ export default function BookDetail() {
       </div>
       <div className="mx-auto max-w-4xl py-5">
         <h3 className='font-bold text-xl text-center'>My Notes</h3>
-        <BookForm/>
+        <NoteForm/>
         <NoteList/>
       </div>
     </section>
