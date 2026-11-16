@@ -5,10 +5,12 @@ import { db } from '../firebase';
 import useFirestore from '../hooks/useFirestore';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
+import { getBookCoverUrl, uploadBookCover } from '../utils/bookCover';
 
 export default function BookForm() {
 
   const {bookId} = useParams();
+  let { user } = useContext(AuthContext);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -16,7 +18,10 @@ export default function BookForm() {
   const [categories, setCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [file, setFile] = useState(null);
+  const [coverUrl, setCoverUrl] = useState('');
   const [preview, setPreview] = useState('')
+  const [formError, setFormError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   let { addCollection, updateDocument } = useFirestore();
 
@@ -29,10 +34,12 @@ export default function BookForm() {
         getDoc(ref)
           .then((doc) => {
             if (doc.exists()) {
-              let { title, description, categories } = doc.data();
+              let { title, description, categories, coverUrl } = doc.data();
               setTitle(title);
               setDescription(description);
               setCategories(categories);
+              setCoverUrl(coverUrl || '');
+              setPreview(coverUrl ? getBookCoverUrl(coverUrl) : '');
             }
           });
     //Create Form: If bookId is not present, set the form to create mode and clear the form fields.
@@ -41,6 +48,9 @@ export default function BookForm() {
       setTitle('');
       setDescription('');
       setCategories([]);
+      setCoverUrl('');
+      setPreview('');
+      setFile(null);
     }
   }, [bookId]);
 
@@ -54,11 +64,10 @@ export default function BookForm() {
     setNewCategory('')
   }
 
-  let { user } = useContext(AuthContext);
-
   const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
+            setFormError('');
     }
   }
 
@@ -78,19 +87,35 @@ export default function BookForm() {
   },[file])
 
   const submitForm = async (e) => {
-        e.preventDefault();
-        let data = {
-            title,
-            description,
-            categories,
-            uid: user.uid
-        }
-        if(isEdit) {
-            await updateDocument('books', bookId, data)
-        }else {
-            await addCollection('books', data)
-        }
-        navigate('/');
+    e.preventDefault();
+    setFormError('');
+    if (!user) {
+      setFormError('You must be signed in to save a book.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const savedCoverUrl = file ? await uploadBookCover(file, user.uid) : coverUrl;
+      const data = {
+        title,
+        description,
+        categories,
+        uid: user.uid,
+        coverUrl: savedCoverUrl,
+      };
+
+      if (isEdit) {
+        await updateDocument('books', bookId, data);
+      } else {
+        await addCollection('books', data);
+      }
+      navigate('/');
+    } catch (error) {
+      setFormError(error.message || 'Unable to save the book. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -172,6 +197,7 @@ export default function BookForm() {
           </label>
           <input
             type="file"
+            accept="image/*"
             onChange={handleFileChange}
             className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
           />
@@ -185,11 +211,17 @@ export default function BookForm() {
         </div>
 
 
-        <button  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
+        {formError && (
+          <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            {formError}
+          </p>
+        )}
+
+        <button disabled={isSaving} className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            <span className='hidden md:block'>{isEdit ? 'Update Book' : 'Create Book'}</span>
+            <span className='hidden md:block'>{isSaving ? 'Saving...' : isEdit ? 'Update Book' : 'Create Book'}</span>
         </button>
       </form>
     </section>

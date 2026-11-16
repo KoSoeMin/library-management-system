@@ -5,6 +5,7 @@ import edit from '../assets/edit.svg'
 import useFirestore, { useCollection } from '../hooks/useFirestore'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
+import { getBookCoverUrl } from '../utils/bookCover'
 
 export default function BookList() {
 
@@ -73,7 +74,7 @@ export default function BookList() {
                 <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
                   <div className="bg-slate-100">
                     <img
-                      src={images}
+                      src={book.coverUrl ? getBookCoverUrl(book.coverUrl) : images}
                       alt={`${book.title} cover`}
                       className="aspect-[2/3] w-full object-contain"
                     />

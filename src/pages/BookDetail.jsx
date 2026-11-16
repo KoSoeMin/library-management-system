@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router';
 import bookImg from '../assets/images.jpg'
 import useFirestore from '../hooks/useFirestore';
+import { getBookCoverUrl } from '../utils/bookCover'
 
 export default function BookDetail() {
 
@@ -41,7 +42,7 @@ export default function BookDetail() {
           <article className="grid overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="flex min-h-80 items-center justify-center bg-gradient-to-br from-indigo-100 via-slate-100 to-indigo-50 p-8 sm:p-12">
               <img
-                src={bookImg}
+                src={book.coverUrl ? getBookCoverUrl(book.coverUrl) : bookImg}
                 alt={`${book.title} cover`}
                 className="max-h-[28rem] max-w-full rounded-xl object-contain shadow-xl"
               />
