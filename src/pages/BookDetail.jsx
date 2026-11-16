@@ -3,6 +3,7 @@ import bookImg from '../assets/images.jpg'
 import useFirestore from '../hooks/useFirestore';
 import { getBookCoverUrl } from '../utils/bookCover'
 import BookForm from '../components/BookForm';
+import NoteList from '../components/NoteList';
 
 export default function BookDetail() {
 
@@ -80,18 +81,7 @@ export default function BookDetail() {
       <div className="mx-auto max-w-4xl py-5">
         <h3 className='font-bold text-xl text-center'>My Notes</h3>
         <BookForm/>
-        <div className='border-1 shadow-md p-3 my-2'>
-          <div className='flex space-x-3'>
-            <img className='rounded-full w-12 h-12' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
-            <div>
-              <h3>Ko Soe Min</h3>
-            <div>16.11.2026</div>
-            </div>
-          </div>
-          <div className='mt-3'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur molestiae dolore amet repellat ex nulla ad, hic non iusto numquam iste deleniti, necessitatibus temporibus velit iure laudantium adipisci. Eos, iste.
-          </div>
-        </div>
+        <NoteList/>
       </div>
     </section>
   )
