@@ -15,6 +15,8 @@ export default function BookForm() {
   const [newCategory, setNewCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState('')
 
   let { addCollection, updateDocument } = useFirestore();
 
@@ -53,6 +55,27 @@ export default function BookForm() {
   }
 
   let { user } = useContext(AuthContext);
+
+  const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+    }
+  }
+
+  const handlePreviewImage = (file) => {
+    let reader = new FileReader;
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      setPreview(reader.result)
+    }
+  }
+  
+  useEffect(() => {
+    if(file) {
+      handlePreviewImage(file);
+    }
+  },[file])
 
   const submitForm = async (e) => {
         e.preventDefault();
@@ -140,11 +163,27 @@ export default function BookForm() {
             </div>
         </div>
 
-        {/* {error && (
-            <p role="alert" className="mt-4 text-sm text-red-600">
-              Unable to create the book: {error}
-            </p>
-        )} */}
+       <div>
+          <label
+            htmlFor="title"
+            className="mb-2 block text-sm my-3 font-semibold text-slate-700"
+          >
+            Upload Image
+          </label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+          />
+          {!!preview && (
+            <img
+              src={preview}
+              alt="Image preview"
+              className="mt-4 h-48 w-48 rounded-xl object-cover border border-slate-200 shadow-sm"
+            />
+          )}
+        </div>
+
 
         <button  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200 disabled:cursor-not-allowed disabled:opacity-60">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.7} stroke="currentColor" className="size-5">
