@@ -28,7 +28,7 @@ export default function BookDetail() {
      }
 
   return (
-    <section className="py-6 sm:py-10">
+    <section className="py-2 sm:py-10">
       <div className="mx-auto max-w-4xl">
         <Link
           to="/"
@@ -75,6 +75,25 @@ export default function BookDetail() {
             </div>
           </article>
         ) }
+      </div>
+      <div className="mx-auto max-w-4xl py-5">
+        <h3 className='font-bold text-xl text-center'>My Notes</h3>
+        <textarea className='bg-gray-50 w-full shadow-md border-1' name='id' cols="30" rows="5"></textarea>
+        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 my-3 rounded transition duration-200 flex items-center gap-2">
+            <span className='hidden md:block'>Add Note</span>
+        </button>
+        <div className='border-1 shadow-md p-3 my-2'>
+          <div className='flex space-x-3'>
+            <img className='rounded-full w-12 h-12' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
+            <div>
+              <h3>Ko Soe Min</h3>
+            <div>16.11.2026</div>
+            </div>
+          </div>
+          <div className='mt-3'>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur molestiae dolore amet repellat ex nulla ad, hic non iusto numquam iste deleniti, necessitatibus temporibus velit iure laudantium adipisci. Eos, iste.
+          </div>
+        </div>
       </div>
     </section>
   )
