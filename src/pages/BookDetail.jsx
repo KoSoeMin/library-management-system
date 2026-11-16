@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router';
 import bookImg from '../assets/images.jpg'
 import useFirestore from '../hooks/useFirestore';
 import { getBookCoverUrl } from '../utils/bookCover'
+import BookForm from '../components/BookForm';
 
 export default function BookDetail() {
 
@@ -78,10 +79,7 @@ export default function BookDetail() {
       </div>
       <div className="mx-auto max-w-4xl py-5">
         <h3 className='font-bold text-xl text-center'>My Notes</h3>
-        <textarea className='bg-gray-50 w-full shadow-md border-1' name='id' cols="30" rows="5"></textarea>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 my-3 rounded transition duration-200 flex items-center gap-2">
-            <span className='hidden md:block'>Add Note</span>
-        </button>
+        <BookForm/>
         <div className='border-1 shadow-md p-3 my-2'>
           <div className='flex space-x-3'>
             <img className='rounded-full w-12 h-12' src="https://avatars.githubusercontent.com/u/197745210?v=4" alt="" />
