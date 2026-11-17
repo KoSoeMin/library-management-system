@@ -25,8 +25,7 @@ export default function BookList() {
     authReady && Boolean(user)
   );
   
-  let deleteBook = async(e, id) => {
-    e.preventDefault();
+  let deleteBook = async(id) => {
     await deleteDocument('books', id);
   }
 
@@ -66,12 +65,8 @@ export default function BookList() {
             {filteredBooks.length === 0 ? (
               <p className="col-span-full text-center text-slate-500">No books found{search ? ` for "${search}"` : ''}.</p>
             ) : filteredBooks.map((book) => (
-              <Link 
-                key={book.id} 
-                to={`/books/${book.id}`} 
-                className="block" // Prevents layout shifts from the Link wrapper
-              >
-                <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <article key={book.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+                <Link to={`/books/${book.id}`} className="block">
                   <div className="bg-slate-100">
                     <img
                       src={book.coverUrl ? getBookCoverUrl(book.coverUrl) : images}
@@ -89,31 +84,35 @@ export default function BookList() {
                         {book.description}
                       </p>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-2 justify-between items-center">
-                      <div>
-                        {(Array.isArray(book.categories) ? book.categories : []).map((category) => (
-                          <span
-                            key={category}
-                            className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
-                          >
-                            {category}
-                          </span>
-                        ))}
-                      </div>
-                      <Link to={`/edit/${book.id}`} 
-                        className="inline-flex items-center bg-blue-600 hover:bg-blue-700 rounded-full px-3 py-1 text-xs font-medium text-white transition-colors"
-                      >
-                        <img src={edit} alt="Edit" className="w-4 h-4" />
-                      </Link>
-
-                      <div onClick={(e) => deleteBook(e, book.id)} className="flex items-center gap-2 bg-red-600 inline-block rounded-full px-3 py-1 text-xs font-medium text-white">
-                        <img src={trash} alt="Delete" className="w-4 h-4 cursor-pointer" />
-                      </div>
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(book.categories) ? book.categories : []).map((category) => (
+                        <span
+                          key={category}
+                          className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+                        >
+                          {category}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                </article>
-              </Link>
+                </Link>
+                <div className="flex items-center justify-end gap-2 px-5 pb-5">
+                  <Link to={`/edit/${book.id}`}
+                    aria-label={`Edit ${book.title}`}
+                    className="inline-flex items-center bg-blue-600 hover:bg-blue-700 rounded-full px-3 py-1 text-xs font-medium text-white transition-colors"
+                  >
+                    <img src={edit} alt="" className="w-4 h-4" />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => deleteBook(book.id)}
+                    aria-label={`Delete ${book.title}`}
+                    className="flex items-center gap-2 bg-red-600 rounded-full px-3 py-1 text-xs font-medium text-white"
+                  >
+                    <img src={trash} alt="" className="w-4 h-4" />
+                  </button>
+                </div>
+              </article>
             ))}
           </div>
       </div>
